@@ -1,0 +1,24 @@
+create table clientes(
+  cli_cod number(5)primary key, 
+  cli_nome varchar(30), 
+  cli_tel number(9), 
+  cli_cpf number(11) unique 
+);
+
+CREATE TABLE exemplo (nome_linha tipo_variavel, nome_linha2 tipo_variavel2);
+
+ALTER TABLE clientes
+ADD cli_sex char(1);
+
+ALTER TABLE clientes MODIFY cli_tel number(11);
+
+create table pedidos(
+  ped_cod number(5),
+  ped_desc varchar(30), 
+  ped_cli number(5), 
+  primary key (ped_cod),
+  FOREIGN KEY (ped_cli) REFERENCES clientes(cli_cod)
+);
+
+DROP TABLE clientes;
+
