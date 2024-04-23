@@ -1,0 +1,36 @@
+SELECT * FROM  countries;
+SELECT * FROM DEPARTMENTS;
+SELECT * FROM EMPLOYEES;
+SELECT * FROM JOBS;
+SELECT * FROM LOCATIONS;
+
+--MEDIA SALARIAL POR DEPARTAMENTO
+select departments.department_name as Nome_Departamento,
+       round(avg(employees.salary),2) as Media_Salarial
+from departments
+INNER JOIN employees
+on employees.department_id = departments.department_id
+group by departments.department_name;
+
+--Relacão de funcionario que trabalham em sao paulo
+select employees.first_name as Nome,
+       employees.last_name as Sobrenome,
+       employees.phone_number as Telefone,
+       jobs.job_title as Profissao,
+       locations.city as Localidade
+from employees
+inner join departments on departments.department_id = employees.department_id
+inner join locations on locations.location_id = departments.location_id
+inner join jobs on jobs.job_id = employees.job_id
+where locations.city like ('Oxford%');
+
+-- Folha de pagamento
+select employees.employee_id as ID,
+       employees.first_name as Nome_funcionario,
+       departments.department_name as Departamento,
+       jobs.job_title as Funçao,
+       ceil((MONTHS_BETWEEN(sysdate,employees.hire_date)/12)) as Qtd_ano,
+       round((employees.salary + employees.salary*nvl(employees.commission_pct,0) + employees.salary*0.01*ceil(MONTHS_BETWEEN(sysdate,employees.hire_date)/12)),2) as Salario_total
+from employees
+inner join departments on departments.department_id = employees.department_id
+inner join jobs on jobs.job_id = employees.job_id;

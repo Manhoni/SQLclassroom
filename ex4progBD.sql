@@ -32,3 +32,10 @@ select nome_aluno, nome_disc, nota_aluno from tb_alunos
 inner join tb_notas on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
 inner join tb_disciplinas on tb_disciplinas.cod_disc = tb_notas.cod_nota_disc
 where tb_notas.nota_aluno < 7;
+
+/*
+where tb_notas.nota_aluno <7;
+where tb_alunos.data_matricula IS NULL;
+where tb_notas.nota_aluno between 5 AND 7; 
+where tb_alunos.nome_aluno LIKE 'A%' 
+*/

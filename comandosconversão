@@ -1,0 +1,32 @@
+select sum(nota_aluno) 
+from tb_notas;
+
+select cod_nota_aluno, 
+round(avg(nota_aluno), 2) MEDIA
+from tb_notas
+group by cod_nota_aluno;
+
+select cod_nota_aluno, 
+round(avg(nota_aluno), 2) MEDIA
+from tb_notas
+having avg(nota_aluno) < 7
+group by cod_nota_aluno;
+
+select nome_aluno, 
+to_char(data_matricula, 'DD-MM-YYYY') DATA
+from tb_alunos;
+
+select nome_aluno, 
+to_char(data_matricula, 'DD-MM-YYYY') DATA
+from tb_alunos
+where data_matricula > to_date('01-01-2010', 'DD-MM-YYYY');
+
+select nome_aluno, 
+nvl(to_char(data_matricula, 'DD-MM-YYYY'), 'sem data') DATA
+from tb_alunos;
+
+select decode( cod_nota_disc, 1,'portugues') as
+disciplina, nota_aluno
+from tb_notas;
+
+

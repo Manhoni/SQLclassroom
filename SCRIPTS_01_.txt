@@ -1,0 +1,80 @@
+drop table ESCREVE; 
+drop table ITEM;
+drop table VENDA;
+drop table LIVRO; 
+drop table ASSUNTO; 
+drop table EDITORA; 
+drop table CLIENTE; 
+drop table AUTOR; 
+
+
+CREATE TABLE ASSUNTO
+  (
+    cd_assunto NUMBER(5),
+    ds_assunto VARCHAR2(20),
+    CONSTRAINT assunto_pk PRIMARY KEY (cd_assunto)
+  );
+CREATE TABLE EDITORA
+  (
+    cd_editora  NUMBER(5),
+    nm_editora VARCHAR2(20),
+    CONSTRAINT editora_pk PRIMARY KEY (cd_editora)
+  );
+CREATE TABLE LIVRO
+  (
+    cd_livro   NUMBER(5),
+    cd_editora NUMBER(5),
+    cd_assunto NUMBER(5),
+    nm_livro   VARCHAR2(20),
+    vl_livro   NUMBER(7,2),
+    qt_folhas  NUMBER(4),
+    CONSTRAINT livro_pk PRIMARY KEY (cd_livro),
+    CONSTRAINT livro_cd_editora_fk FOREIGN KEY (cd_editora) REFERENCES editora (cd_editora),
+    CONSTRAINT livro_cd_assunto_fk FOREIGN KEY (cd_assunto) REFERENCES assunto (cd_assunto)
+  );
+CREATE TABLE ITEM
+  (
+    nr_item  NUMBER(5),
+    cd_livro NUMBER(5),
+    vl_item  NUMBER(7,2),
+    CONSTRAINT item_pk PRIMARY KEY (nr_item),
+    CONSTRAINT item_cd_livro_fk FOREIGN KEY (cd_livro) REFERENCES livro (cd_livro)
+  );
+  --drop table cliente
+CREATE TABLE CLIENTE
+  (
+    cd_cliente NUMBER(5),
+    nm_cliente VARCHAR2(20),
+    sexo       VARCHAR2(1),
+    ds_cidade  VARCHAR2(20),
+    sg_estado  VARCHAR2(2),
+    CONSTRAINT cliente_pk PRIMARY KEY (cd_cliente)
+  );
+CREATE TABLE VENDA
+  (
+    cd_venda   NUMBER(5),
+    cd_cliente NUMBER(5),
+    nr_item    NUMBER(5),
+    vl_venda   NUMBER(7,2),
+    dt_venda DATE,
+    CONSTRAINT venda_pk PRIMARY KEY (cd_venda),
+    CONSTRAINT venda_cd_cliente_fk FOREIGN KEY (cd_cliente) REFERENCES cliente (cd_cliente)
+  );
+    
+  CREATE TABLE AUTOR
+    (
+      nr_matricula NUMBER(5),
+      nm_autor     VARCHAR2(20),
+      nr_cpf       NUMBER(10),
+      ds_cidade    VARCHAR2(10),
+      sg_estado    VARCHAR2(2),
+      CONSTRAINT autor_pk PRIMARY KEY (nr_matricula)
+    );
+  CREATE TABLE ESCREVE
+    (
+      cd_livro     NUMBER(5),
+      nr_matricula NUMBER(5),
+      dt_escreve DATE,
+      CONSTRAINT escreve_cd_livro_fk FOREIGN KEY (cd_livro) REFERENCES livro (cd_livro),
+      CONSTRAINT escreve_nr_matricula_fk FOREIGN KEY (nr_matricula) REFERENCES autor (nr_matricula)
+    );

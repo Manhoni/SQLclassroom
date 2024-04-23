@@ -1,0 +1,122 @@
+select * from cliente
+where nm_cliente = 'Cliente 65';
+
+insert into cliente values (3521,'Cliente 65','F','GOiania','GO');
+
+select count(cd_cliente) from cliente;
+
+create table TIPO_TELEFONE 
+  (
+    cd_tipo_telefone number(1) primary key,
+    ds_tipo_telefone varchar(20)
+    );
+    
+CREATE TABLE TELEFONE
+  (
+    cd_cliente NUMBER(5),
+    cd_tipo_telefone NUMBER(1),
+    cd_telefone number(1) primary key,
+    nu_ddd  NUMBER(2),
+    nu_telefone number(9),
+    
+    CONSTRAINT tipo_cd_tipo_telefone_fk FOREIGN KEY (cd_tipo_telefone) REFERENCES TIPO_TELEFONE (cd_tipo_telefone),
+    constraint numero_cliente_fk foreign key (cd_cliente)
+references CLIENTE (cd_cliente)
+  );
+  
+insert into tipo_telefone values (0, 'residencial');
+insert into tipo_telefone values (1, 'celular');
+insert into tipo_telefone values (3, 'recado');
+insert into tipo_telefone values (4, 'profissional');
+
+insert into telefone 
+  (
+  CD_CLIENTE,
+  CD_TIPO_TELEFONE,
+  CD_TELEFONE,
+  NU_DDD,
+  NU_TELEFONE)
+values (192, 1, 0, 14, 999008833);
+
+insert into telefone 
+  (
+  CD_CLIENTE,
+  CD_TIPO_TELEFONE,
+  CD_TELEFONE,
+  NU_DDD,
+  NU_TELEFONE)
+values (192, 4, 1, 14, 39008811);
+
+insert into telefone 
+  (
+  CD_CLIENTE,
+  CD_TIPO_TELEFONE,
+  CD_TELEFONE,
+  NU_DDD,
+  NU_TELEFONE)
+values (221, 1, 2, 11, 999004455);
+
+insert into telefone 
+  (
+  CD_CLIENTE,
+  CD_TIPO_TELEFONE,
+  CD_TELEFONE,
+  NU_DDD,
+  NU_TELEFONE)
+values (221, 4, 3, 11, 39004450);
+
+insert into telefone 
+  (
+  CD_CLIENTE,
+  CD_TIPO_TELEFONE,
+  CD_TELEFONE,
+  NU_DDD,
+  NU_TELEFONE)
+values (256, 1, 4, 44,999554499);
+
+insert into telefone 
+  (
+  CD_CLIENTE,
+  CD_TIPO_TELEFONE,
+  CD_TELEFONE,
+  NU_DDD,
+  NU_TELEFONE)
+values (256, 4, 5, 44, 39554409);
+
+select cli.*, tel.nu_ddd, tel.nu_telefone, tipo.ds_tipo_telefone 
+from CLIENTE cli
+left join telefone tel
+on tel.cd_cliente = cli.cd_cliente
+left join tipo_telefone tipo
+on tipo.cd_tipo_telefone = tel.cd_tipo_telefone;
+
+select ite.cd_livro, count(ven.cd_venda), sum(ven.vl_venda)
+from livro liv
+join item ite
+on liv.cd_livro = ite.cd_livro
+join venda ven
+on ven.nr_item = ite.nr_item
+group by ite.cd_livro
+order by count(ven.cd_venda) desc;
+
+select aut.nm_autor, count(ven.cd_venda), sum(ven.vl_venda)
+from livro liv
+join item ite
+on liv.cd_livro = ite.cd_livro
+join venda ven
+on ven.nr_item = ite.nr_item
+join escreve esc
+on liv.cd_livro = esc.cd_livro
+join autor aut
+on aut.nr_matricula = esc.nr_matricula
+group by aut.nm_autor
+order by sum(ven.vl_venda) desc;
+
+--mexer neste exercício
+select CD_VENDA, ven.CD_CLIENTE, ven.NR_ITEM, VL_VENDA, to_char(dt_venda,'Month YYYY')
+from livro liv
+join item ite
+on liv.cd_livro = ite.cd_livro
+join venda ven
+on ven.nr_item = ite.nr_item
+order by ven.dt_venda;

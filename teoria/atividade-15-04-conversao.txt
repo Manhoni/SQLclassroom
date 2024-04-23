@@ -1,0 +1,41 @@
+-- Folha de pagamento com a data de entrada
+select employees.employee_id as ID,
+       employees.first_name as Nome_funcionario,
+       to_char(employees.hire_date,'DD MONTH YYYY - DAY') as Data_contratacao,
+       departments.department_name as Departamento,
+       jobs.job_title as Funçao,
+       ceil((MONTHS_BETWEEN(sysdate,employees.hire_date)/12)) as Qtd_ano,
+       round((employees.salary + employees.salary*nvl(employees.commission_pct,0) + employees.salary*0.01*ceil(MONTHS_BETWEEN(sysdate,employees.hire_date)/12)),2) as Salario_total
+from employees
+inner join departments on departments.department_id = employees.department_id
+inner join jobs on jobs.job_id = employees.job_id;
+
+--Historico profisional dos funcionarios "Neena e Jennifer"
+select distinct employees.first_name as Nome,
+       employees.last_name as Sobrenome,
+       job_history.start_date as Data_inicio,
+       job_history.end_date as Data_saida,
+       jobs.job_id,
+       jobs.job_title as Cargo,
+       departments.department_name as Nome_departamento
+from employees
+inner join departments on employees.department_ID = departments.department_id
+inner join job_history on employees.employee_ID = job_history.employee_ID
+inner join jobs on employees.job_id=jobs.job_id
+where employees.first_name like 'Neena' or employees.first_name like 'Jennifer';
+
+select * from employees where first_name like 'Neena';
+
+select * from jobs;
+
+select job_history.employee_id, employees.job_id from employees
+inner join job_history on employees.employee_ID = job_history.employee_ID
+where employees.employee_id = 101;
+
+select * from employees;
+select * from jobs;
+
+select first_name, start_date, jobs.job_id, job_title from employees
+left join jobs on employees.job_id = jobs.job_id
+inner join job_history on employees.employee_ID = job_history.employee_ID
+where first_name like ('Neena');
