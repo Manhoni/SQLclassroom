@@ -1,0 +1,23 @@
+create table TB_ALUNOS (
+  Cod_aluno number(5) primary key,
+  Nome_aluno varchar2(20) not null
+);
+
+insert into TB_ALUNOS (Cod_aluno, Nome_aluno) values (1, 'Antônio');
+insert into TB_ALUNOS (Cod_aluno, Nome_aluno) values (2, 'Paulo');
+insert into TB_ALUNOS (Cod_aluno, Nome_aluno) values (3, 'Silvio');
+insert into TB_ALUNOS (Cod_aluno, Nome_aluno) values (4, 'Cristina');
+
+update TB_ALUNOS set Nome_aluno = 'Pedro' where Cod_aluno = 3;
+
+delete from TB_ALUNOS WHERE Cod_aluno < 2;
+
+update TB_ALUNOS set Nome_aluno = 'Cristiane' where Nome_aluno = 'Cristina';
+
+insert into TB_ALUNOS (Cod_aluno, Nome_aluno) values (1, 'Paulo');
+
+delete from tb_alunos where cod_aluno = 2;
+
+insert into TB_ALUNOS (Cod_aluno, Nome_aluno) values (2, 'Claudio');
+
+select * from TB_ALUNOS order by cod_aluno;

@@ -1,0 +1,164 @@
+--drop user aluno
+---------------------------------------
+--create user aluno identified by aluno;
+--grant connect, resource to aluno;
+--disc
+--conn aluno/aluno
+----------------------------------------
+drop table tb_notas;
+drop table tb_alunos;
+drop table tb_disciplinas;
+drop table tb_alunos_log;
+drop sequence sq_audt;
+----------------------------------------
+create table tb_alunos(
+cod_aluno number(5) constraint tb_alunos_pk primary key,
+nome_aluno varchar2(20) constraint tb_alunos_nn not null,
+sexo_aluno char(1) constraint sexo_ck check (sexo_aluno in ('M','F')),
+data_matricula timestamp);
+----------------------------------------
+create table tb_alunos_log (
+cod_log number(10),
+cod_aluno number(5),
+nome_aluno varchar(20),
+sexo_aluno char(1),
+data_matricula timestamp,
+dml_aluno varchar(6),
+dml_data date,
+dml_user varchar(10),
+dml_terminal varchar(15));
+-----------------------------------------
+create table tb_disciplinas(
+cod_disc number(5) constraint tb_disciplinas_pk primary key,
+nome_disc varchar2(20) constraint tb_disciplinas_nn not null);
+----------------------------------------
+create table tb_notas(
+cod_nota_aluno number(5),
+cod_nota_disc number(5),
+nota_aluno number(3,1) constraint tb_notas_nn not null,
+constraint tb_notas_pk primary key (cod_nota_aluno, cod_nota_disc),
+constraint tb_notas_alunos_fk foreign key (cod_nota_aluno) references tb_alunos (cod_aluno),
+constraint tb_notas_disciplinas_fk foreign key (cod_nota_disc) references tb_disciplinas (cod_disc));
+----------------------------------------
+CREATE SEQUENCE sq_audt
+INCREMENT BY 1
+START WITH 1
+NOMAXVALUE
+NOCYCLE
+ORDER;
+----------------------------------------
+CREATE OR REPLACE TRIGGER tr_tb_alunos_log
+  after DELETE OR INSERT OR UPDATE ON tb_alunos
+  FOR EACH ROW
+BEGIN
+IF DELETING THEN
+	INSERT INTO tb_alunos_log VALUES (sq_audt.NEXTVAL,:old.cod_aluno,  :old.nome_aluno,:old.sexo_aluno,:old.data_matricula, 'DELETE', SYSDATE, USER, USERENV('TERMINAL'));
+ELSIF INSERTING THEN
+	INSERT INTO tb_alunos_log VALUES (sq_audt.NEXTVAL,:new.cod_aluno,  :new.nome_aluno,:new.sexo_aluno,:new.data_matricula, 'INSERT', SYSDATE, USER,USERENV('TERMINAL'));
+ELSE	INSERT INTO tb_alunos_log VALUES (sq_audt.NEXTVAL,:old.cod_aluno,  :old.nome_aluno,:old.sexo_aluno,:old.data_matricula, 'UPDATE', SYSDATE, USER,USERENV('TERMINAL'));
+	INSERT INTO tb_alunos_log VALUES (sq_audt.NEXTVAL,:new.cod_aluno,  :new.nome_aluno,:new.sexo_aluno,:new.data_matricula, 'UPDATE', SYSDATE, USER,USERENV('TERMINAL'));
+END IF;
+END;
+/
+----------------------------------------
+insert into tb_alunos values (22, 'ANT8NIO','M','01/05/08');
+insert into tb_alunos values (2, 'JOSE','M','02/05/08 02:10:40');
+insert into tb_alunos values (3, 'PEDR8','M','03/05/08 12:10:40');
+insert into tb_alunos values (4, 'PAULO','M','04/05/08 13:10:40');
+insert into tb_alunos values (5, 'RAQUEL','M',NULL);
+insert into tb_alunos values (6, 'ELIAS','M','06/04/08 15:10:40');
+insert into tb_alunos values (7, 'N8EMIA','M','07/05/08 16:10:40');
+insert into tb_alunos values (8, 'MILA','M','08/05/08 17:10:40');
+insert into tb_alunos values (9, 'KATIANE','M',NULL);
+insert into tb_alunos values (10, 'S8PHIA','M','10/05/08 10:10:40');
+insert into tb_alunos values (11, 'THIAGO','M','11/04/08 11:10:40');
+insert into tb_alunos values (12, 'ESTHER','M','12/05/08 11:10:40');
+insert into tb_alunos values (13, 'ANT8NIO PER','M','13/05/08 13:10:40');
+insert into tb_alunos values (14, 'SEBASTIA8','M','14/05/07 15:10:40');
+insert into tb_alunos values (15, 'OTAVI8','M',NULL);
+insert into tb_alunos values (16, 'OTACI8LI8','M','03/05/08 12:10:40');
+insert into tb_alunos values (17, 'RENATA','M','03/05/11 02:10:40');
+insert into tb_alunos values (18, 'PEDRO JOSE','M','03/05/06 07:10:40');
+insert into tb_alunos values (19, 'MARIA','M','03/05/10 06:10:40');
+insert into tb_alunos values (20, 'JOSÉ PEDRO','M','04/10/07 05:10:40');
+commit;----------------------------------------
+insert into tb_disciplinas values ( 1, 'PORTUGUES');
+insert into tb_disciplinas values ( 2, 'MATEMATICA');
+insert into tb_disciplinas values ( 3, 'HISTORIA');
+insert into tb_disciplinas values ( 4, 'FISICA');
+insert into tb_disciplinas values ( 5, 'QUIMICA');
+insert into tb_disciplinas values ( 6, 'BIOLOGIA');
+commit;
+----------------------------------------
+insert into tb_notas values (2,3,9);
+insert into tb_notas values (3,4, 8);
+insert into tb_notas values (4,5, 7);
+insert into tb_notas values (1,6, 8);
+insert into tb_notas values (2,1, 6);
+insert into tb_notas values (3,2, 5);
+insert into tb_notas values (4,3, 4);
+insert into tb_notas values (2,5,6);
+insert into tb_notas values (3,3, 7);
+insert into tb_notas values (4,4,5);
+insert into tb_notas values (1,5, 7);
+insert into tb_notas values (2,6, 8);
+insert into tb_notas values (3,1, 5);
+insert into tb_notas values (4,2, 5.6);
+insert into tb_notas values (1,3, 8);
+insert into tb_notas values (2,4, 7);
+insert into tb_notas values (3,5, 6);
+insert into tb_notas values (4,2, 4);
+insert into tb_notas values (1,3, 1);
+insert into tb_notas values (2,4, 0);
+insert into tb_notas values (3,5, 7);
+insert into tb_notas values (4,4, 8.4);
+insert into tb_notas values (5,2,10);
+insert into tb_notas values (6,3, 9);
+insert into tb_notas values (7,4, 8);
+insert into tb_notas values (8,5, 7);
+insert into tb_notas values (9,6, 8);
+insert into tb_notas values (6,1, 6);
+insert into tb_notas values (7,2, 5);
+insert into tb_notas values (8,3, 4);
+insert into tb_notas values (5,4, 5);
+insert into tb_notas values (6,5,7);
+insert into tb_notas values (7,3, 7);
+insert into tb_notas values (6,4,5);
+insert into tb_notas values (7,5, 7);
+insert into tb_notas values (8,6, 8);
+insert into tb_notas values (9,1, 5);
+commit;
+
+select nome_aluno, sexo_aluno from tb_alunos;
+
+select nome_aluno as "Nome do Aluno", 
+      cod_aluno as "Códico", 
+      sexo_aluno as "Sexo" 
+from tb_alunos order by cod_aluno desc;
+
+select * from tb_alunos where nome_aluno like ('ANT%');
+
+update tb_alunos set nome_aluno = 'ANTONIO' where cod_aluno = 22;
+commit;
+
+update tb_alunos set nome_aluno = 'ANTONIO FER' where cod_aluno = 13;
+commit;
+
+select * from tb_alunos where nome_aluno like ('ANTONIO%');
+
+update tb_alunos set sexo_aluno = 'F' where cod_aluno in (5,7,8,9,10,12,17,19);
+commit;
+
+select nome_aluno as "Nome do Aluno", 
+      cod_aluno as "Códico", 
+      sexo_aluno as "Sexo" 
+from tb_alunos where sexo_aluno = 'F';
+
+select nome_aluno as "Nome do Aluno",
+        cod_aluno as "Código",
+        sexo_aluno as "Sexo"
+from tb_alunos where sexo_aluno = 'M' and cod_aluno > 8;
+
+select nome_aluno, nome_disc, nota_aluno from tb_alunos 
+inner join tb_notas on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+inner join tb_disciplinas on tb_disciplinas.cod_disc= tb_notas.cod_nota_disc where tb_notas.nota_aluno < 7;

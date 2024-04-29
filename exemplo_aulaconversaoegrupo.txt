@@ -1,0 +1,55 @@
+select * from tb_notas;
+
+select cod_nota_aluno, sum(nota_aluno) 
+from tb_notas
+group by cod_nota_aluno;
+
+select cod_nota_aluno codigo, 
+       round(AVG(nota_aluno),2) as media
+from tb_notas
+--where media<7 - nome de coluna como alias não funciona como condição de where, função de grupo não pode usar where
+group by cod_nota_aluno
+having round(AVG(nota_aluno),2)<7;
+
+select cod_nota_aluno codigo, 
+       round(AVG(nota_aluno),2) as media
+from tb_notas
+where nota_aluno<7 --dessa forma faz um filtro para calcular a media, usa-se apenas as notas menores que 7
+group by cod_nota_aluno;
+
+select cod_nota_aluno codigo,
+       cod_nota_disc, --se colocar o codigo da disciplina tem que por no group by
+       round(AVG(nota_aluno),2) as media
+from tb_notas
+group by cod_nota_aluno, cod_nota_disc; -- resultado não fica mais agrupado com o cod_nota_aluno
+
+select nome_aluno, to_char(data_matricula,'DD-MM-YYYY'), data_matricula  -- YYYY-MM-DD-MONTH-DAY
+from tb_alunos
+where data_matricula>'01/01/10';
+
+select nome_aluno, to_char(data_matricula,'DD-MM-YYYY'), data_matricula
+from tb_alunos
+where data_matricula>'01/01/10'; -- se nao estiver nesse formato todas as datas nao vao retornar todos os valores
+
+select nome_aluno, to_char(data_matricula,'DD-MM-YYYY')
+from tb_alunos
+where to_char(data_matricula,'DD-MM-YYYY')>'01-01-2010'; --nao recebe o que queria usando dessa forma
+
+select nome_aluno, to_char(data_matricula,'DD-MM-YYYY')
+from tb_alunos
+where data_matricula>to_date('01-01-2010', 'DD-MM-YYYY'); 
+--dessa forma converte e depois aplicar a restrição 
+--então busca mesmo que as datas nao estejam num formato padrao
+
+select nome_aluno, to_char(nvl(data_matricula,sysdate),'DD-MM-YYYY') -- como data de matricula naturalmente nao é char nao poderia por "sem data"
+from tb_alunos;
+
+select nome_aluno, nvl(to_char(data_matricula,'DD-MM-YYYY'),'sem data')
+from tb_alunos;
+
+select decode(cod_nota_disc,1,'Port') as disciplina, -- se nao por default os outros valores viram null
+       nota_aluno
+from tb_notas;
+
+select nome_aluno, decode(sexo_aluno, 'M', 'Masc', 'Q', 'Fem', 'ERRO') as sexo
+from tb_alunos;

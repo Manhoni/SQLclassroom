@@ -1,0 +1,53 @@
+desc tb_alunos; //mostra a descrição da tabela
+
+select tb_alunos.nome_aluno, tb_notas.nota_aluno, tb_disciplinas.nome_disc
+from tb_alunos
+left join tb_notas on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+left join tb_disciplinas on tb_disciplinas.cod_disc = tb_notas.cod_nota_disc;
+
+select tb_alunos.nome_aluno, tb_notas.nota_aluno, tb_disciplinas.nome_disc
+from tb_alunos
+left join tb_notas on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+left join tb_disciplinas on tb_disciplinas.cod_disc = tb_notas.cod_nota_disc
+order by 3 desc; //pode por o valor da posicao em que a coluna se encontra no select
+ou
+order by tb_notas.nota_aluno desc;
+
+
+select tb_alunos.nome_aluno, tb_notas.nota_aluno,tb_disciplinas.cod_disc, tb_disciplinas.nome_disc
+from tb_alunos
+inner join tb_notas on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+inner join tb_disciplinas on tb_disciplinas.cod_disc = tb_notas.cod_nota_disc
+where tb_notas.nota_aluno < 6;
+
+select nome_aluno from tb_alunos order by nome_aluno;
+
+select nome_aluno from tb_alunos where nome_aluno not like ('A%') order by nome_aluno;
+
+select distinct tb_notas.nota_aluno, tb_disciplinas.nome_disc 
+from tb_notas
+inner join tb_disciplinas
+on tb_notas.cod_nota_disc = tb_disciplinas.cod_disc;
+
+select nome_aluno from tb_alunos where nome_aluno like ('%8%');
+
+select nome_aluno, translate (nome_aluno, '8', 'O') from tb_alunos;
+
+update tb_alunos
+set nome_aluno = translate (nome_aluno, '8','O')
+where nome_aluno like '%8%';
+
+update tb_alunos
+set nome_aluno = translate (nome_aluno, '0','O')
+where nome_aluno like '%0%';
+
+select * from tb_alunos;
+select * from tb_disciplinas;
+
+insert into tb_notas values (15, 3, 10);
+
+commit;
+
+select avg(nota_aluno), cod_nota_disc 
+from tb_notas
+group by cod_nota_disc;

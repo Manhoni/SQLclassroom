@@ -1,0 +1,64 @@
+- Média Salarial por Departamento
+  nome_departamento    media_salarial
+  
+select departments.department_name,
+round(avg(salary), 2) 
+from employees
+left join departments 
+on employees.department_id = departments.department_id
+where departments.department_name is not null
+group by departments.department_name;
+ 
+ 
+- Relação de funcionarios que trabalham em Toronto
+  nome_completo  telefone  função  localidade
+  
+select emp.first_name||' '|| emp.last_name Nome,
+emp.phone_number Tel, job_title Cargo, city Cidade
+from employees emp
+left join jobs
+on jobs.job_id = emp.job_id
+join departments
+on departments.department_id = emp.department_id
+join locations
+on locations.location_id = departments.location_id
+where city = 'Toronto';
+
+ 
+- Folha de Pagamento
+  nome_funcionario  Departamento/Funcao    Salario_Total
+                        salario + commis_pct + 0,01 * (ano_trabalhado)  
+                        
+select emp.first_name||' '|| emp.last_name Nome,
+emp.department_id, emp.job_id,
+round((emp.salary + (emp.salary*nvl(emp.commission_PCT, 0)) +
+  (months_between(sysdate,hire_date)/12*0.01*emp.salary)), 2)Salario
+from employees emp;
+
+  
+- Acrescente na Folha de pagamento a data de contratação do Funcionário no seguinte formato:
+                         "15 Abril 2024 - Segunda-Feira"
+ 
+select emp.first_name||''|| emp.last_name Nome,
+emp.department_id, emp.job_id, to_char(hire_date,'DD month YYYY -day- '),
+round((emp.salary + (emp.salary*nvl(emp.commission_PCT, 0)) +
+  (months_between(sysdate,hire_date)/12*0.01*emp.salary)), 2)Salario
+from employees emp;
+
+ 
+- Exiba o Historico Profissional dos Funcionarios:
+        Neena
+        Jennifer
+   
+  Nome completo / data de inicio / data de termino / nome do cargo / departamento
+  
+select emp.first_name||' '|| emp.last_name Nome,
+start_date, end_date, job_title, department_name
+from employees emp
+left join job_history
+on emp.job_id = job_history.job_id
+left join jobs
+on jobs.job_id = emp.job_id
+left join departments
+on departments.department_id = emp.department_id
+where emp.first_name = 'Neena' or emp.first_name = 'Jennifer';

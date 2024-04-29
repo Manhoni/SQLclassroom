@@ -1,0 +1,19 @@
+select nome_aluno, trunc(MONTHS_BETWEEN (sysdate, data_matricula)) from tb_alunos;
+
+select * from(
+  select nome_aluno, (sysdate - data_matricula) as qt_dias
+  from tb_alunos 
+  where data_matricula not like 'null'  
+  order by (sysdate - data_matricula) desc) 
+where rownum = 1;
+
+alter table tb_alunos add med_aluno decimal(3,1);
+
+select * from tb_alunos;
+
+update tb_alunos set med_aluno = 10.0 where cod_aluno = 22;
+update tb_alunos set med_aluno = 9.5 where cod_aluno = 2;
+
+select sum(med_aluno)/count(cod_aluno) as med_sala from tb_alunos;
+
+select round(sum(med_aluno)/count(cod_aluno), 2) as med_sala from tb_alunos;

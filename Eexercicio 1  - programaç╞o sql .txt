@@ -1,0 +1,19 @@
+create table clientes (
+cli_cod number(5) primary key,
+cli_nome varchar(30),
+cli_tel number(9),
+cli_cpf number(11) unique
+);
+
+create table pedidos (
+ped_cod number(5) primary key,
+ped_desc varchar(30),
+ped_cli number(5),
+foreign key (ped_cli) references clientes(cli_cod)
+);
+
+alter table clientes add cli_sex char (1);
+
+alter table clientes modify cli_tel number(11);
+
+drop table clientes;

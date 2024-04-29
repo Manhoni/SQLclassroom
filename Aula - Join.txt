@@ -1,0 +1,105 @@
+select * from tb_alunos;
+
+select * from tb_notas;
+
+select * from tb_alunos inner join tb_notas 
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno;
+
+select * from tb_alunos left join tb_notas 
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno;
+
+select * from tb_alunos right join tb_notas 
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno;
+
+select * from tb_alunos full outer join tb_notas 
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno;
+
+select * from tb_alunos cross join tb_notas;
+
+select alu.cod_aluno as "codigo", alu.nome_aluno "nome", nota.nota_aluno "nota" 
+from tb_alunos alu 
+inner join tb_notas nota
+on alu.cod_aluno = nota.cod_nota_aluno;
+
+select alu.cod_aluno as "codigo", alu.nome_aluno "nome aluno", nota.nota_aluno "nota", disc.nome_disc "nome disciplina"
+from tb_alunos alu 
+inner join tb_notas nota
+on alu.cod_aluno = nota.cod_nota_aluno
+inner join tb_disciplinas disc
+on nota.cod_nota_disc = disc.cod_disc
+where nota.nota_aluno < 7;
+
+select tb_alunos.cod_aluno, tb_alunos.nome_aluno, tb_notas.nota_aluno, tb_disciplinas.nome_disc
+from tb_alunos
+inner join tb_notas
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+inner join tb_disciplinas
+on tb_notas.cod_nota_disc = tb_disciplinas.cod_disc
+where tb_notas.nota_aluno < 7;
+
+select tb_alunos.cod_aluno, tb_alunos.nome_aluno, tb_notas.nota_aluno, tb_disciplinas.nome_disc
+from tb_alunos
+inner join tb_notas
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+inner join tb_disciplinas
+on tb_notas.cod_nota_disc = tb_disciplinas.cod_disc
+where tb_notas.nota_aluno between 5 and 7;
+
+select tb_alunos.cod_aluno, tb_alunos.nome_aluno, tb_notas.nota_aluno, tb_disciplinas.nome_disc
+from tb_alunos
+inner join tb_notas
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+inner join tb_disciplinas
+on tb_notas.cod_nota_disc = tb_disciplinas.cod_disc
+where tb_notas.nota_aluno in (3, 5, 8);
+
+select tb_alunos.cod_aluno, tb_alunos.nome_aluno, tb_notas.nota_aluno, tb_disciplinas.nome_disc, tb_alunos.data_matricula
+from tb_alunos
+inner join tb_notas
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+inner join tb_disciplinas
+on tb_notas.cod_nota_disc = tb_disciplinas.cod_disc
+where tb_alunos.data_matricula is null;
+
+select tb_alunos.cod_aluno, tb_alunos.nome_aluno, tb_notas.nota_aluno, tb_disciplinas.nome_disc, tb_alunos.data_matricula
+from tb_alunos
+left join tb_notas
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+left join tb_disciplinas
+on tb_notas.cod_nota_disc = tb_disciplinas.cod_disc
+where tb_alunos.data_matricula is null;
+
+select tb_alunos.cod_aluno, tb_alunos.nome_aluno, tb_notas.nota_aluno, tb_disciplinas.nome_disc
+from tb_alunos
+left join tb_notas
+on tb_alunos.cod_aluno = tb_notas.cod_nota_aluno
+left join tb_disciplinas
+on tb_notas.cod_nota_disc = tb_disciplinas.cod_disc
+where tb_alunos.nome_aluno like ('A% F%'); --case sensitive no like ja que os dados são
+
+DECLARE
+    v_nome_aluno_original VARCHAR2(100);
+    v_nome_aluno_modificado VARCHAR2(100);
+BEGIN
+    -- Loop através dos registros da tabela tb_alunos
+    FOR aluno_rec IN (SELECT nome_aluno FROM tb_alunos) LOOP
+        -- Armazena o nome do aluno original
+        v_nome_aluno_original := aluno_rec.nome_aluno;
+        -- Inicializa o nome do aluno modificado como a versão original
+        v_nome_aluno_modificado := v_nome_aluno_original;
+        -- Loop para substituir os caracteres "8" por "0"
+        FOR i IN 1..LENGTH(v_nome_aluno_original) LOOP
+            IF SUBSTR(v_nome_aluno_original, i, 1) = '8' THEN
+                v_nome_aluno_modificado := REPLACE(v_nome_aluno_modificado, '8', '0');
+            END IF;
+        END LOOP;
+        -- Atualiza o registro na tabela tb_alunos com o nome do aluno modificado
+        UPDATE tb_alunos
+        SET nome_aluno = v_nome_aluno_modificado
+        WHERE nome_aluno = v_nome_aluno_original;
+        -- Exibe informações sobre a alteração
+    END LOOP;
+    -- Confirma as alterações
+    COMMIT;
+END;
+/

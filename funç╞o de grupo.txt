@@ -1,0 +1,13 @@
+select --tb_notas.cod_nota_aluno         Codigo_aluno, -- posso referenciar pela tabela tb_notas ou tb_alunos dependendo do codigo usado
+       tb_alunos.cod_aluno,
+       tb_alunos.nome_aluno as Nome,
+       round(avg(tb_notas.nota_aluno), 2) as medias,
+       count(tb_notas.cod_nota_aluno)
+from tb_notas
+right join tb_alunos
+  on tb_alunos.cod_aluno=tb_notas.cod_nota_aluno
+group by tb_alunos.cod_aluno, tb_alunos.nome_aluno --group by referencia todas as colunas citadas fora a da função
+--having count(tb_notas.cod_nota_aluno)>0
+order by 1;
+
+select * from tb_notas;
